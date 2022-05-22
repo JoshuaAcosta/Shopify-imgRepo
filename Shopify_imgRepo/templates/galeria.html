@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{%block title%} <title>Your image gallery</title> {%endblock%}
+{%block scripts%}
+ <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
+{%endblock%}
+
+{% block content %}
+<div class="container">
+    <div class="row pb-5">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top"> 
+            <a class="navbar-brand" href="#">
+                <img src="static/img/filestorage.jpg" style="width: 6%" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+             </button>
+
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
+                    </li>
+                 </ul>
+            </div>
+            
+        </nav>
+    </div>
+    <div class="row pt-5">
+        <div class="col">
+        <h2>Welcome {{name}}!</h2> 
+        </div>
+    </div>
+    <div class="row pt-5">
+        <div class="col-12 align-items-center text-center">
+            <form enctype="multipart/form-data" method="POST" action="/api/images">
+                <label for="">Select image(s) to upload:</label> <br>
+                <input type="file" name="file" value="file" class="form-control" multiple="multiple" />
+                <br>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    {% if category == 'success' %}
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+
+                    {% if category == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <input type="submit" name="Upload" value="Upload" class="btn btn-info">
+            </form>
+        </div>
+    </div>  
+    <div class="row pt-3">  
+        <div class="col-12 border-top border-dark align-items-center text-center">
+            <div class="row pt-3">
+                <h3> Your Image Gallery: </h3> <br>
+                <br>
+            </div>
+        </div>
+    </div>
+    
+    <div id="gallery">
+        <div v-if="images.length == 0">
+        <p> There are no images in your gallery.</p>    
+        </div>
+        <ul v-for="img in images">
+            <img :src=img.file_location alt="" width="300" height="200"></li>
+        </ul>
+    </div>
+</div>
+<script>
+var vm = new Vue ({
+    delimiters: ['[[',']]'],
+    el: '#gallery',
+    data: () => {
+      return {
+         images: []
+      }},
+    mounted() {
+        axios
+        .get('http://localhost:5000/api/images').then(response => {this.images = response.data})
+  }}
+  );
+</script>
+{% endblock %}
