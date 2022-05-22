@@ -34,7 +34,7 @@ Complete the following tasks to run the application on your local system:
 <br />
 
 ### Registration Page
-![image info](Shopify_imgRepo/static/img/screenshots/registration_view.png)
+![image info](/Shopify_imgRepo/static/img/screenshots/registration_view.png)
 <br />
 
 ### Login Page
